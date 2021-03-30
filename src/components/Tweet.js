@@ -1,27 +1,30 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import { Link, withRouter } from "react-router-dom";
+
 import { formatTweet, formatDate } from "../utils/helpers"
 
 import { TiArrowBackOutline } from "react-icons/ti"
 import { TiHeartOutline } from "react-icons/ti"
 import { TiHeartFullOutline } from "react-icons/ti"
 
-import { handleToggleTweet } from "../actions/tweets";
+import { handleToggleTweet } from "../actions/tweets"
 
 class Tweet extends Component {
 	handleLike(e, { dispatch, tweet, authUser }) {
 		e.preventDefault()
-		
-		dispatch(handleToggleTweet({
-			id: tweet.id,
-			hasLiked: tweet.hasLiked,
-			authUser
-		}))
+
+		dispatch(
+			handleToggleTweet({
+				id       : tweet.id,
+				hasLiked : tweet.hasLiked,
+				authUser,
+			}),
+		)
 	}
 	toParent(e, id) {
 		e.preventDefault()
-
-		// Todo: Redirect to Parent Tweet
+		this.props.history.push(`/tweet/${id}`)
 	}
 	render() {
 		const { tweet } = this.props,
@@ -34,11 +37,12 @@ class Tweet extends Component {
 				likes,
 				replies,
 				parent,
+				id,
 			} = tweet
 		return !tweet ? (
 			<p>This tweet doesn't exist</p>
 		) : (
-			<div className="tweet">
+			<Link to={`/tweet/${id}`} className="tweet">
 				<img
 					src={avatar}
 					alt={`Avatar of ${name}`}
@@ -63,7 +67,7 @@ class Tweet extends Component {
 						<span>{replies !== 0 && replies}</span>
 						<button
 							className="heart-button"
-							onClick={(e)=>this.handleLike(e, this.props)}
+							onClick={(e) => this.handleLike(e, this.props)}
 						>
 							{hasLiked === true ? (
 								<TiHeartFullOutline
@@ -77,7 +81,7 @@ class Tweet extends Component {
 						<span>{likes !== 0 && likes}</span>
 					</div>
 				</div>
-			</div>
+			</Link>
 		)
 	}
 }
@@ -94,4 +98,4 @@ const mapStateToProps = ({ authUser, users, tweets }, { id }) => {
 	}
 }
 
-export default connect(mapStateToProps)(Tweet)
+export default withRouter(connect(mapStateToProps)(Tweet))
