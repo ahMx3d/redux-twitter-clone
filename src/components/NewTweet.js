@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 
+import { handleAddTweet } from "../actions/tweets"
+
 class NewTweet extends Component {
 	state = {
 		text : "",
@@ -17,11 +19,10 @@ class NewTweet extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault()
 
-		const { text } = this.state
-
-		// Todo: Add Tweet To Store
-
-		console.log("New Tweet:", text)
+		const { text } = this.state,
+			{ dispatch, id } = this.props
+        
+        dispatch(handleAddTweet(text,id))
 
 		this.setState(() => ({
 			text : "",
@@ -32,7 +33,7 @@ class NewTweet extends Component {
 		const { text } = this.state,
 			maxLength = 280,
 			tweetLeft = maxLength - text.length
-		// redirect to "/" if submitted
+		// Todo: redirect to "/" if submitted
 		return (
 			<div>
 				<h3 className="center">Compose The Tweet</h3>
@@ -60,8 +61,4 @@ class NewTweet extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = {}
-
-export default /*connect(mapStateToProps, mapDispatchToProps)*/ NewTweet
+export default connect()(NewTweet)

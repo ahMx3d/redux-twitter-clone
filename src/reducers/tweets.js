@@ -1,4 +1,4 @@
-import { RECEIVE_TWEETS, TOGGLE_TWEET } from "../constants/tweets"
+import { RECEIVE_TWEETS, TOGGLE_TWEET, ADD_TWEET } from "../constants/tweets"
 
 const tweets = (state = {}, action) => {
 	switch (action.type) {
@@ -21,6 +21,27 @@ const tweets = (state = {}, action) => {
 									action.authUser,
 								]),
 				},
+			}
+		case ADD_TWEET:
+			const { tweet } = action
+			let replyingTo = {}
+
+			if (tweet.replyingTo !== null) {
+				replyingTo = {
+					[tweet.replyingTo]: {
+						...state[tweet.replyingTo],
+						replies : state[tweet.replyTo].replies.concat([
+							tweet.id,
+						]),
+					},
+				}
+			} else {
+			}
+
+			return {
+				...state,
+				[action.tweet.id]: action.tweet,
+				...replyingTo,
 			}
 
 		default:
